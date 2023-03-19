@@ -1,0 +1,88 @@
+<h1>My Courses was Deleted</h1>
+<div class="mt-4">
+    <a href="/me/stored/courses">Quay lại</a>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tên Khóa Học</th>
+      <th scope="col">Video ID</th>
+      <th scope="col">Thời Gian Xóa</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+     {{#each courses}}
+    <tr>
+        <th scope="row">{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.videoId}}</td>
+        <td>{{this.deletedAt}}</td>
+        <td>
+            <a href="" class="btn btn-link btn-restore" data-id="{{this._id}}">Khôi phục</a>
+            <a href="" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#modal-delete">Xóa vĩnh viễn</a>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="5" class="text-center">
+          Thùng rác rỗng
+        </td>
+    </tr>
+    {{/each}}
+</table>
+</div>
+
+{{!-- Confirm Delete --}}
+<div id="modal-delete" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa vĩnh viễn</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa vĩnh viễn khóa học này? Sau khi xóa vĩnh viễn bạn sẽ không thể khôi phục.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy</button>
+        <button id="btn-del-course" type="button" class="btn btn-danger">Chấp nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+<form name="del-form" method='POST'></form>
+<form name="res-form" method='POST'></form>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var coursesID;
+    var delForm = document.forms['del-form']
+    var resForm = document.forms['res-form']
+
+    var btnDelCourse = document.getElementById('btn-del-course')
+    var restoreBtn = $('.btn-restore')
+  //Khi click delete
+  $('#modal-delete').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    coursesID = button.data('id')
+  })
+
+  btnDelCourse.onclick = function() {
+    delForm.action = '/courses/' + coursesID + '/forever/?_method=DELETE';
+    delForm.submit();
+  }
+ 
+  restoreBtn.click(function (e) {    
+    e.preventDefault()
+    var coursesID = $(this).data('id')
+
+    resForm.action = '/courses/' + coursesID + '/restore/?_method=PATCH';
+    resForm.submit()
+  })
+})
+
+</script>

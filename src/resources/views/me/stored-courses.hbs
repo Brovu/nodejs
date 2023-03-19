@@ -1,0 +1,136 @@
+<h1>My Courses Detail (tổng cộng <mark>{{quanityCourses}}</mark> khóa học)</h1> 
+<form name="form-container" method="POST" action="/courses/handle-submit-form">
+  <div class="mt-4">
+      Khóa học đã được xóa <a href="/me/trash/courses">tại đây</a>
+      <table class="table">
+        <div class="mt-4 d-flex align-items-center">
+          <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="check-all">
+          <label class="form-check-label" for="check-all">
+            Chọn tất cả
+          </label>
+          </div>
+          <select class="form-control form-control-sm m-4 select" name="action" required>
+            <option value="">-- Choose --</option>
+            <option value="delete">Delete</option>
+      </select>
+  
+          <button class="btn btn-primary btn-sm execute-action" disabled>Thực hiện</button>
+        </div>
+    <thead>
+      <tr>
+        <th scope="col" colspan="2">#</th>
+        <th scope="col">Tên Khóa Học {{{sortable 'name' _sort}}} </th>                                    
+        <th scope="col">Video ID {{{sortable '_id' _sort}}}</th>
+        <th scope="col">Thời Gian Tạo {{{sortable 'createdAt' _sort}}} </th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+       {{#each courses}}
+      <tr>
+        <td>
+          <div class="form-check">
+             <input class="form-check-input" type="checkbox" name="coursesID[]" value="{{this._id}}">
+          </div>
+        </td>
+          <th scope="row">{{sum @index 1}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.videoId}}</td>
+          <td>{{this.createdAt}}</td>
+          <td>
+              <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+              <a href="" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#modal-delete">Xóa</a>
+          </td>
+      </tr>
+      {{else}}
+      <tr>
+          <td colspan="5" class="text-center">
+            Bạn chưa đăng khóa học nào.
+          </br>
+          Đăng khóa học <a href="/courses/create">tại đây</a>
+          </td>
+      </tr>
+      {{/each}}
+  </table>
+  </div>
+</form>
+
+{{!-- Confirm Delete --}}
+<div id="modal-delete" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xóa bỏ khóa học này?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy xóa</button>
+        <button id="btn-del-course" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Delete Hidden Form --}}
+<form name="del-form" method='POST'></form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var coursesID;
+    var delForm = document.forms['del-form']
+    var checkAll = $('#check-all')
+    var courseItemCheckbox = $('input[name="coursesID[]"]')
+    var executeAction = $('.execute-action')
+    var formContainer = $('form[name="form-container"]')
+  //Khi click delete
+  $('#modal-delete').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    coursesID = button.data('id')
+  })
+
+  var btnDelCourse = document.getElementById('btn-del-course')
+  btnDelCourse.onclick = function() {
+    delForm.action = '/courses/' + coursesID + '?_method=DELETE';
+    delForm.submit();
+  }
+
+  //Khi click check all
+  checkAll.change(function() {
+    var isCheckedAll = $(this).prop('checked')
+    courseItemCheckbox.prop('checked', isCheckedAll)
+    enableExecuteBtn()
+  })
+
+  //Khi click 1 checkbox item
+  courseItemCheckbox.change(function() {
+    var isCheckedAll = courseItemCheckbox.length === $('input[name="coursesID[]"]:checked').length
+    checkAll.prop('checked', isCheckedAll)
+    enableExecuteBtn()
+  })
+
+  //Set "thuc hien" btn just submit when is lighted
+ formContainer.on('submit', function(e) {
+    var isSubmittable = !executeAction.hasClass('disabled')
+    if(!isSubmittable) {
+        e.preventDefault()
+    }
+    })
+
+  //Enable nút Thực Hiện
+  function enableExecuteBtn() {
+    var countCheck = $('input[name="coursesID[]"]:checked').length
+
+    if(countCheck > 0) {
+      executeAction.attr('disabled', false)
+    } else {
+      executeAction.attr('disabled', true)
+    }
+  }
+  })
+</script>
