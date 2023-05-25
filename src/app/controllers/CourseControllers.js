@@ -1,20 +1,20 @@
-const Course = require('../model/Courses');
-const { mongooseToObject } = require('../../tool/mongoose');
+const Course = require("../model/Courses");
+const { mongooseToObject } = require("../../tool/mongoose");
 class CourseControllers {
   //Get khoa-hoc/:slug
   show(req, res, next) {
     Course.findOne({ slug: req.params.slug })
       .then((course) =>
-        res.render('courses/show', {
+        res.render("courses/show", {
           course: mongooseToObject(course),
-        }),
+        })
       )
       .catch(next);
   }
 
   //Get khoa-hoc/create
   create(req, res, next) {
-    res.render('courses/create');
+    res.render("courses/create");
   }
   //POST khoa-hoc/store
   store(req, res, next) {
@@ -23,7 +23,7 @@ class CourseControllers {
     const course = new Course(formData);
     course
       .save()
-      .then(() => res.redirect('/me/stored/courses'))
+      .then(() => res.redirect("/"))
       .catch(next);
   }
 
@@ -31,9 +31,9 @@ class CourseControllers {
   edit(req, res, next) {
     Course.findById(req.params.id)
       .then((course) =>
-        res.render('courses/edit', {
+        res.render("courses/edit", {
           course: mongooseToObject(course),
-        }),
+        })
       )
       .catch(next);
   }
@@ -41,7 +41,7 @@ class CourseControllers {
   //PUT courses/:id
   update(req, res, next) {
     Course.updateOne({ _id: req.params.id }, req.body)
-      .then(() => res.redirect('/me/stored/courses'))
+      .then(() => res.redirect("/me/stored/courses"))
       .catch(next);
   }
 
@@ -49,7 +49,7 @@ class CourseControllers {
   destroy(req, res, next) {
     Course.delete({ _id: req.params.id })
       .then(() => {
-        res.redirect('back');
+        res.redirect("back");
       })
       .catch(next);
   }
@@ -58,7 +58,7 @@ class CourseControllers {
   hardDestroy(req, res, next) {
     Course.deleteOne({ _id: req.params.id })
       .then(() => {
-        res.redirect('back');
+        res.redirect("back");
       })
       .catch(next);
   }
@@ -66,22 +66,23 @@ class CourseControllers {
   //RESTORE courses/:id
   restore(req, res, next) {
     Course.restore({ _id: req.params.id })
-      .then(() => res.redirect('back'))
+      .then(() => res.redirect("back"))
       .catch(next);
   }
 
   //HANDLE courses/handle-submit-form
   handleSubmitForm(req, res, next) {
-      switch(req.body.action) {
-          case 'delete': 
-          Course.delete({ _id: {$in: req.body.coursesID} })
+    switch (req.body.action) {
+      case "delete":
+        Course.delete({ _id: { $in: req.body.coursesID } })
           .then(() => {
-            res.redirect('back');
+            res.redirect("back");
           })
           .catch(next);
-          break;
-          default: alert('Invalid')
-      }
+        break;
+      default:
+        alert("Invalid");
+    }
   }
 }
 

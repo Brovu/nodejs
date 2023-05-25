@@ -1,0 +1,66 @@
+<div class="container-fluid w-50 mt-5">
+  <form id="loginForm" method="POST" action="/login">
+    <div class="h2">Chào mừng đến với Videos and life &#10084;</div>
+    <div class="mb-3">
+      <label for="username" class="form-label">User name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        name="username"
+        aria-describedby="emailHelp"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+      />
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary w-50" onclick="login()">Log In</button>
+    </div>
+  </form>
+</div>
+<script>
+  function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+  function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+  function login() { 
+    $.ajax({ 
+      url: '/login', 
+      type: 'POST', 
+      data: { 
+        username:$('#username').val(),
+        password: $('#password').val() } })
+        .then(data => {
+        setCookie('token', data.token, 30)
+  }) 
+  .catch(err => { 
+      console.log(err) 
+    }) }
+</script>
