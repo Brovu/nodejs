@@ -1,59 +1,61 @@
-<h1 class="text-center text-success">My Video (tổng cộng {{quanityCourses}} video)</h1> 
+<h1 class="text-center text-success">My Video (tổng cộng <u>{{quanityCourses}}</u> video)</h1> 
 <form name="form-container" method="POST" action="/courses/handle-submit-form">
   <div class="mt-4 text-center">
-      Video đã được xóa <a href="/me/trash/courses" style="font-size: 20px">tại đây</a>
-      <table class="table">
-        <div class="mt-4 d-flex align-items-center">
-          <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="check-all">
-          <label class="form-check-label mark-color" for="check-all">
-            Chọn tất cả
-          </label>
+      Video đã được xóa <a href="/me/trash/courses " style="font-size: 20px; color: red">tại đây</a>
+      <div class="table-responsive">
+        <table class="table table-success table-striped">
+          <div class="mt-4 d-flex align-items-center">
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="check-all">
+            <label class="form-check-label mark-color" for="check-all">
+              Chọn tất cả
+            </label>
+            </div>
+            <select class="form-control form-control-sm m-4 select" name="action" required>
+              <option value="">-- Choose --</option>
+              <option value="delete">Delete</option>
+        </select>
+    
+            <button class="btn btn-primary btn-sm execute-action" disabled>Thực hiện</button>
           </div>
-          <select class="form-control form-control-sm m-4 select" name="action" required>
-            <option value="">-- Choose --</option>
-            <option value="delete">Delete</option>
-      </select>
-  
-          <button class="btn btn-primary btn-sm execute-action" disabled>Thực hiện</button>
-        </div>
-    <thead>
-      <tr>
-        <th scope="col" colspan="2">#</th>
-        <th scope="col">Tiêu đề {{{sortable 'name' _sort}}} </th>                                    
-        <th scope="col">Video ID {{{sortable '_id' _sort}}}</th>
-        <th scope="col">Thời Gian Tạo {{{sortable 'createdAt' _sort}}} </th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-       {{#each courses}}
-      <tr>
-        <td>
-          <div class="form-check">
-             <input class="form-check-input" type="checkbox" name="coursesID[]" value="{{this._id}}">
-          </div>
-        </td>
-          <th scope="row">{{sum @index 1}}</th>
-          <td>{{this.name}}</td>
-          <td>{{this.videoId}}</td>
-          <td>{{this.createdAt}}</td>
+      <thead>
+        <tr>
+          <th scope="col" colspan="2">#</th>
+          <th scope="col">Tiêu đề {{{sortable 'name' _sort}}} </th>                                    
+          <th scope="col">Video ID {{{sortable '_id' _sort}}}</th>
+          <th scope="col">Thời Gian Tạo {{{sortable 'createdAt' _sort}}} </th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+         {{#each courses}}
+        <tr>
           <td>
-              <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
-              <a href="" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#modal-delete">Xóa</a>
+            <div class="form-check">
+               <input class="form-check-input" type="checkbox" name="coursesID[]" value="{{this._id}}">
+            </div>
           </td>
-      </tr>
-      {{else}}
-      <tr>
-          <td colspan="5" class="text-center">
-            Bạn chưa đăng video mới nào.
-          </br>
-          Tạo mới video <a href="/courses/create">tại đây</a>
-          </td>
-      </tr>
-      {{/each}}
-  </table>
+            <th scope="row ">{{sum @index 1}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.videoId}}</td>
+            <td>{{this.createdAt}}</td>
+            <td>
+                <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+                <a href="" class="btn btn-link" data-toggle="modal" data-id="{{this._id}}" data-target="#modal-delete">Xóa</a>
+            </td>
+        </tr>
+        {{else}}
+        <tr>
+            <td colspan="5" class="text-center">
+              Bạn chưa đăng video mới nào.
+            </br>
+            Tạo mới video <a href="/courses/create">tại đây</a>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+      </div>
   </div>
 </form>
 
